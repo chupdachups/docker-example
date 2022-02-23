@@ -1,0 +1,34 @@
+FROM maven:3.8.4-openjdk-8-slim
+
+RUN apt-get update
+RUN apt-get install -y git
+
+WORKDIR ~
+
+RUN git clone https://github.com/chupdachups/spring-cloud-gateway.git
+
+RUN mvn -f spring-cloud-gateway/pom.xml package -DskipTests
+
+RUN cp spring-cloud-gateway/target/spring-cloud-gateway-0.0.1-SNAPSHOT.jar spring-cloud-gateway.jar
+
+RUN rm -rf spring-cloud-gateway
+
+# rabbit mq config
+ENV mq_host my-rabbit 
+ENV mq_port 5672
+ENV mq_id guest
+ENV mq_pw guest
+
+# gateway config
+ENV service_port=8082 \
+	profile=docker \
+	eureka_server=eureka-server \
+	eureka_servers=http://eureka-server:8761/eureka \
+	config_servers=http://config-server:9001
+
+
+ENTRYPOINT ["java", "-jar"]
+
+CMD ["spring-cloud-gateway.jar"]
+
+expose 8082

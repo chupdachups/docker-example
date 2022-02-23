@@ -1,0 +1,27 @@
+FROM maven:3.8.4-openjdk-8-slim
+
+RUN apt-get update
+RUN apt-get install -y git
+
+WORKDIR ~
+
+RUN git clone https://github.com/chupdachups/spring-cloud-eureka.git
+
+RUN mvn -f spring-cloud-eureka/pom.xml package -DskipTests
+
+RUN cp spring-cloud-eureka/target/spring-cloud-eureka-0.0.1-SNAPSHOT.jar spring-cloud-eureka.jar
+
+RUN rm -rf spring-cloud-eureka
+
+
+# eureka-server config
+ENV service_port=8761 \
+	profile=docker \
+	eureka_server=eureka-server \
+	eureka_servers=http://eureka-server:8761/eureka
+
+ENTRYPOINT ["java", "-jar"]
+
+CMD ["spring-cloud-eureka.jar"]
+
+expose 8761

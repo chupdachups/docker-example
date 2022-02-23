@@ -1,0 +1,51 @@
+#custom network 생성
+docker network create spring-cloud-net
+
+
+#rabbitmq
+docker run -d --network spring-cloud-net --hostname my-rabbit --name some-rabbit -p 8080:15672 rabbitmq:3-management
+
+
+#config-server
+docker run -itd --network spring-cloud-net --hostname my-config --link some-rabbit:my-rabbit -p 9001:9001 --name config-server config-server
+
+
+#eureka-server
+docker run -itd  --network spring-cloud-net -p 8761:8761 --hostname eureka-server --name eureka-server eureka-server
+
+
+#gateway
+docker run -itd  --network spring-cloud-net -p 8082:8082 --hostname my-gateway --name my-gateway gateway
+
+
+#webserver - hostname이 같으면 안됨, 따라서 hostname을 다르게 설정하거나 hostname을 설정하지않으면 컨테이너 ID로 매핑되므로 해결
+docker run -itd --network spring-cloud-net --link some-rabbit:my-rabbit --name my-webserver1 webserver
+docker run -itd --network spring-cloud-net --link some-rabbit:my-rabbit --name my-webserver2 webserver
+---
+docker run -itd --network spring-cloud-net --hostname my-webserver1 --link some-rabbit:my-rabbit --name my-webserver1 webserver
+docker run -itd --network spring-cloud-net --hostname my-webserver2 --link some-rabbit:my-rabbit --name my-webserver2 webserver
+---
+docker run -itd --network spring-cloud-net --hostname my-webserver --link some-rabbit:my-rabbit --name my-webserver1 webserver
+docker run -itd --network spring-cloud-net --hostname my-webserver --link some-rabbit:my-rabbit -e port=5012 --name my-webserver2 webserver
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

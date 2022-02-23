@@ -1,0 +1,37 @@
+FROM maven:3.8.4-openjdk-8-slim
+
+RUN apt-get update
+RUN apt-get install -y git
+
+WORKDIR ~
+
+RUN git clone https://github.com/chupdachups/spring-cloud-config.git
+
+RUN mvn -f spring-cloud-config/pom.xml package -DskipTests
+
+RUN cp spring-cloud-config/target/spring-cloud-config-0.0.1-SNAPSHOT.jar spring-cloud-config.jar
+
+RUN rm -rf spring-cloud-config
+
+# rabbit mq config
+ENV mq_host my-rabbit 
+ENV mq_port 5672
+ENV mq_id guest
+ENV mq_pw guest
+
+
+# config-store info 
+ENV git_host=github.com \
+	git_port=443 \
+	git_org=chupdachups \
+	git_repo=config-store.git
+
+	
+# config-server config
+ENV service_port 9001	
+
+ENTRYPOINT ["java", "-jar"]
+
+CMD ["spring-cloud-config.jar"]
+
+expose 9001
