@@ -1,0 +1,6 @@
+FROM docker/whalesay
+
+RUN apt-get update # 리눅스 패키지, 라이브러리 업데이트
+RUN apt-get install -y fortune # furtune 라이브러리를 기존의 이미지에 추가 설치
+
+CMD /usr/games/fortune -a | cowsay

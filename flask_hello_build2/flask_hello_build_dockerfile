@@ -1,0 +1,29 @@
+FROM python:2.7
+
+#MAINTAINER chupdachups@gmail.com
+
+LABEL email="chupdachups@gmail.com"
+LABEL version="my version"
+
+RUN mkdir /myapp
+
+#COPY . /myapp
+
+WORKDIR /myapp
+
+ADD requirements.txt requirements.txt
+
+ADD app/app.py app.py
+ADD app/app2.py app2.py
+
+RUN pip install -r requirements.txt
+
+ENTRYPOINT ["python"]
+
+CMD ["app.py"]
+
+expose 5000
+
+
+
+

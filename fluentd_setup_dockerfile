@@ -1,0 +1,7 @@
+FROM ubuntu:latest
+
+RUN apt-get update && apt-get install -y curl && apt-get install -y gnupg2 \
+	&& apt-get install -y vim \
+	&& curl -fsSL https://toolbelt.treasuredata.com/sh/install-ubuntu-focal-td-agent4.sh | sh
+	
+expose 8888

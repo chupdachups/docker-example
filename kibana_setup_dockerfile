@@ -1,0 +1,10 @@
+FROM ubuntu:latest
+
+RUN apt-get update && apt-get install -y curl && apt-get install -y gnupg2 \
+	&& apt-get install -y vim \
+	&& curl -fsSL https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add - \
+	&& echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | tee -a /etc/apt/sources.list.d/elastic-7.x.list \ 
+	&& apt-get update && apt-get install -y kibana
+	
+expose 5601
+
